@@ -1,3 +1,12 @@
+Physique_run <- function(){
+  appDir <- system.file("shinyApp", package = "Physique")
+  if (appDir == "")
+  {
+    stop("Could not find app directory. Try re-installing `Physique`.", call. = FALSE)
+  }
+  shiny::runApp(appDir, display.mode = "normal", launch.browser = T)
+
+}
 
 chute.libre <- function()
 
@@ -41,12 +50,15 @@ gravite <- function(M,R){
   return(G*(M/(R**2)))
 }
 
-M <- 5.972*10^24
-R <- 6371000
+demo <- function(){
 
-v0 <- 10
-t <- 3
-x <- 3
-h <- 8
-y <- 12
-g <- gravite(M,R)
+  M <- 5.972*10^24
+  R <- 6371000
+
+  v0 <- 10
+  t <- 3
+  x <- 3
+  h <- 8
+  y <- 12
+  g <- gravite(M,R)
+}
