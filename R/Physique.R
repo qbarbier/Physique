@@ -8,9 +8,9 @@ Physique_run <- function(){
 
 }
 
-chute.libre <- function()
+chute.libre <- function(){}
 
-parabole <- function(v0,alpha,x,h,g,t){
+equation.newton <- function(v0=NULL,alpha=NULL,x=NULL,h=NULL,g=NULL,y=NULL,t=NULL){
   # t = scd
   # v0 = m/s
   # x = m
@@ -18,8 +18,8 @@ parabole <- function(v0,alpha,x,h,g,t){
   # g = m/s/N
 
   args <- list(v0,alpha,h,x,g,y,t)
-  res <- unlist(lapply(args,function(i){is.null(res)}))
-  if(which(res==FALSE)>1) return(FALSE)
+  res <- unlist(lapply(args,function(i){is.null(i)}))
+  if(which(FALSE%in%res)>1) return(FALSE)
 
   if(is.null(v0)){
     if(x != 0){
@@ -45,6 +45,24 @@ parabole <- function(v0,alpha,x,h,g,t){
   }
 }
 
+trajectoire <- function(v0,alpha,h,x,g,y,t){
+  args <- list(v0,alpha,h,x,g,y,t)
+  res1 <- unlist(lapply(args,function(i){length(i)>1}))
+  res2 <- unlist(lapply(args,function(i){is.null(i)}))
+
+  if(is.null(y) && length(t)>1){
+    data <- lapply(t, function(i){
+      x <- equation.newton(v0,alpha,h,x=NULL,g,y,t=i)
+      y <- equation.newton(v0,alpha,h,x=0,g,y=NULL,t=i)
+      return(c(x,y))
+    })
+    data <- do.call(rbind,data)
+    data <- cbind(data,t)
+    colnames(data) <- c("x","y","t")
+  }
+  return(data)
+}
+
 gravite <- function(M,R){
   G <- 6.674*10^-11
   return(G*(M/(R**2)))
@@ -54,11 +72,15 @@ demo <- function(){
 
   M <- 5.972*10^24
   R <- 6371000
+  g <- gravite(M,R)
 
   v0 <- 10
-  t <- 3
+  t <- seq(0,3,0.1)
   x <- 3
   h <- 8
-  y <- 12
-  g <- gravite(M,R)
+  y <- NULL
+  alpha <- 45
+
+  data <- trajectoire(v0,alpha,h,x,g,y,t)
+
 }
